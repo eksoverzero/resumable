@@ -1,0 +1,23 @@
+{
+  "name": "resumable",
+  "version": "1.0.0",
+  "description": "Resumable uploads to S3",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/undefinedinc/resumable.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/undefinedinc/resumable/issues"
+  },
+  "homepage": "https://github.com/undefinedinc/resumable#readme",
+  "devDependencies": {
+    "serverless-offline": "^3.24.5",
+    "serverless-secrets-plugin": "^0.1.0"
+  }
+}
