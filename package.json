@@ -16,10 +16,7 @@
     "url": "https://github.com/undefinedinc/cloudburst-functions/issues"
   },
   "homepage": "https://github.com/undefinedinc/cloudburst-functions#readme",
-  "devDependencies": {
-    "serverless-offline": "^3.24.5",
-    "serverless-secrets-plugin": "^0.1.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "resumablejs": "^1.1.0"
   }
