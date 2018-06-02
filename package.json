@@ -1,5 +1,5 @@
 {
-  "name": "resumable",
+  "name": "cloudburstFunctions",
   "version": "1.0.0",
   "description": "Resumable uploads to S3",
   "main": "handler.js",
@@ -8,16 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/undefinedinc/resumable.git"
+    "url": "git+https://github.com/undefinedinc/cloudburst-functions.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/undefinedinc/resumable/issues"
+    "url": "https://github.com/undefinedinc/cloudburst-functions/issues"
   },
-  "homepage": "https://github.com/undefinedinc/resumable#readme",
+  "homepage": "https://github.com/undefinedinc/cloudburst-functions#readme",
   "devDependencies": {
     "serverless-offline": "^3.24.5",
     "serverless-secrets-plugin": "^0.1.0"
+  },
+  "dependencies": {
+    "resumablejs": "^1.1.0"
   }
 }
