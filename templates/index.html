@@ -75,7 +75,7 @@
             });
           r.on('fileSuccess', function(file,message){
               // Reflect that the file upload has completed
-              $('.resumable-file-'+file.uniqueIdentifier+' .resumable-file-progress').html('(completed)');
+              $('.resumable-file-'+file.uniqueIdentifier+' .resumable-file-progress').html('(<a href="' + message +'">' + message + '</a>)');
             });
           r.on('fileError', function(file, message){
               // Reflect that the file upload has resulted in error

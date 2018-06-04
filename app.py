@@ -1,15 +1,11 @@
-from flask import Flask
-from flask import abort
-from flask import jsonify
-from flask import request
-from flask import render_template
+from flask import Flask, abort, jsonify, request, render_template
+from helpers import *
 
 import os
 
 # creates a Flask application, named app
 app = Flask(__name__)
-
-app.debug = True
+app.config.from_object("config")
 
 temp_base = os.path.expanduser("./tmp/")
 
@@ -39,7 +35,7 @@ def resumable():
 
   if os.path.isfile(chunk_file):
     # Let resumable.js know this chunk already exists
-    return 'OK'
+    return 'OK', 200
   else:
     # Let resumable.js know this chunk does not exists and needs to be uploaded
     abort(404, 'Not found')
@@ -48,10 +44,11 @@ def resumable():
 # if it didn't already upload, resumable.js sends the file here
 @app.route("/upload", methods=['POST'])
 def resumable_post():
-  resumableTotalChunks = request.form.get('resumableTotalChunks', type=int)
-  resumableChunkNumber = request.form.get('resumableChunkNumber', default=1, type=int)
+  resumableType = request.form.get('resumableType', default='error', type=str)
   resumableFilename = request.form.get('resumableFilename', default='error', type=str)
   resumableIdentfier = request.form.get('resumableIdentifier', default='error', type=str)
+  resumableTotalChunks = request.form.get('resumableTotalChunks', type=int)
+  resumableChunkNumber = request.form.get('resumableChunkNumber', default=1, type=int)
 
   # get the chunk data
   chunk_data = request.files['file']
@@ -85,7 +82,17 @@ def resumable_post():
       os.rmdir(temp_dir)
       app.logger.debug('File saved to: %s', target_file_name)
 
-  return 'OK'
+      s3_upload = upload_file_to_s3(target_file_name, resumableFilename, app.config["S3_BUCKET"])
+
+      if s3_upload:
+        app.logger.debug('File uploaded to: %s', s3_upload)
+
+        os.remove(target_file_name)
+        app.logger.debug('File removed: %s', target_file_name)
+
+        return s3_upload, 200
+  else:
+    return 'OK', 200
 
 
 def get_chunk_name(uploaded_filename, chunk_number):
