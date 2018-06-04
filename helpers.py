@@ -1,4 +1,4 @@
-from config import DEBUG, S3_KEY, S3_SECRET, S3_BUCKET
+from config import S3_KEY, S3_SECRET, S3_BUCKET
 
 import boto3, botocore, hashlib
 

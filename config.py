@@ -1,7 +1,5 @@
 import os
 
-PORT = 5000
-DEBUG = True
 SECRET_KEY = os.urandom(32)
 
 S3_KEY = os.environ.get("S3_ACCESS_KEY")
