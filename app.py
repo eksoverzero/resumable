@@ -93,4 +93,4 @@ def get_chunk_name(uploaded_filename, chunk_number):
 
 # run the application
 if __name__ == "__main__":
-  app.run(debug=True)
+  app.run()
