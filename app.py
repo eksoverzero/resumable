@@ -11,7 +11,7 @@ CORS(app)
 
 app.config.from_object("config")
 
-temp_base = os.path.expanduser("./tmp/")
+upload_dir = os.path.expanduser("./uploads")
 
 # a route where we will display a welcome message via an HTML template
 @app.route("/")
@@ -32,10 +32,11 @@ def resumable():
     abort(500, 'Parameter error')
 
   # chunk folder path based on the parameters
-  temp_dir = os.path.join(temp_base, resumablePath, resumableIdentfier)
+  resumable_dir = os.path.join(upload_dir, resumablePath)
+  resumable_chunk_dir  = os.path.join(resumable_dir, '.chunks')
 
   # chunk path based on the parameters
-  chunk_file = os.path.join(temp_dir, get_chunk_name(resumableFilename, resumableChunkNumber))
+  chunk_file = os.path.join(resumable_chunk_dir, get_chunk_name(resumableFilename, resumableChunkNumber))
   app.logger.debug('Getting chunk: %s', chunk_file)
 
   if os.path.isfile(chunk_file):
@@ -56,29 +57,28 @@ def resumable_post():
   resumableTotalChunks = request.form.get('resumableTotalChunks', type=int)
   resumableChunkNumber = request.form.get('resumableChunkNumber', default=1, type=int)
 
-  print(request.args)
-
   # get the chunk data
   chunk_data = request.files['file']
 
-  # make our temp directory
-  temp_dir = os.path.join(temp_base, resumablePath, resumableIdentfier)
-  if not os.path.isdir(temp_dir):
-    os.makedirs(temp_dir + '/.chunks')
+  # make our chunk directory
+  resumable_dir = os.path.join(upload_dir, resumablePath)
+  resumable_chunk_dir  = os.path.join(resumable_dir, '.chunks')
+  if not os.path.isdir(resumable_chunk_dir):
+    os.makedirs(resumable_chunk_dir)
 
   # save the chunk data
   chunk_name = get_chunk_name(resumableFilename, resumableChunkNumber)
-  chunk_file = os.path.join(temp_dir, chunk_name)
+  chunk_file = os.path.join(resumable_chunk_dir, chunk_name)
   chunk_data.save(chunk_file)
   app.logger.debug('Saved chunk: %s', chunk_file)
 
   # check if the upload is complete
-  chunk_paths = [os.path.join(temp_dir, get_chunk_name(resumableFilename, x)) for x in range(1, resumableTotalChunks+1)]
+  chunk_paths = [os.path.join(resumable_chunk_dir, get_chunk_name(resumableFilename, x)) for x in range(1, resumableTotalChunks+1)]
   upload_complete = all([os.path.exists(p) for p in chunk_paths])
 
   # combine all the chunks to create the final file
   if upload_complete:
-    target_file_name = os.path.join(temp_dir, resumableFilename)
+    target_file_name = os.path.join(resumable_dir, resumableFilename)
     with open(target_file_name, "ab") as target_file:
       for p in chunk_paths:
         stored_chunk_file_name = p
@@ -88,16 +88,14 @@ def resumable_post():
         os.unlink(stored_chunk_file_name)
       target_file.close()
 
-      if os.path.exists(temp_dir + '/.chunks'):
-        os.rmdir(temp_dir + '/.chunks')
       app.logger.debug('File saved to: %s', target_file_name)
 
-      s3_upload = upload_file_to_s3(target_file_name, resumableFilename, app.config["S3_BUCKET"])
+      s3_upload = upload_file_to_s3(resumable_dir, resumableFilename, app.config["S3_BUCKET"])
 
       if s3_upload:
         app.logger.debug('File uploaded to: %s', s3_upload)
 
-        shutil.rmtree(os.path.dirname(target_file_name))
+        os.remove(target_file_name)
         app.logger.debug('File removed: %s', target_file_name)
 
         return s3_upload, 200

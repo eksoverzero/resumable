@@ -1,6 +1,6 @@
 from config import S3_KEY, S3_SECRET, S3_BUCKET
 
-import boto3, botocore, hashlib
+import os, boto3, botocore, hashlib
 
 s3 = boto3.client(
   "s3",
@@ -9,18 +9,21 @@ s3 = boto3.client(
 )
 
 def upload_file_to_s3(filepath, filename, bucket_name, acl="public-read"):
-  file = open(filepath, 'rb')
+  file = open(os.path.join(filepath, filename), 'rb')
+  upload_path = filepath.replace('./uploads/', '')
 
   try:
-    s3.put_object(
+    r = s3.put_object(
       ACL=acl,
-      Key=filename,
+      Key=upload_path + '/' + filename,
       Body=file,
       Bucket=S3_BUCKET
     )
+
+    print(r)
   except Exception as e:
     # This is a catch all exception, edit this part to fit your needs.
     print("S3 ERROR: ", e)
     return false
 
-  return "{}{}".format('https://s3.amazonaws.com/' + S3_BUCKET + '/' , filename)
+  return "{}{}".format('https://s3.amazonaws.com/' + S3_BUCKET + '/' + upload_path + '/' , filename)
