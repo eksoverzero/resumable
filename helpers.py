@@ -13,14 +13,12 @@ def upload_file_to_s3(filepath, filename, bucket_name, acl="public-read"):
   upload_path = filepath.replace('./uploads/', '')
 
   try:
-    r = s3.put_object(
+    s3.put_object(
       ACL=acl,
       Key=upload_path + '/' + filename,
       Body=file,
       Bucket=S3_BUCKET
     )
-
-    print(r)
   except Exception as e:
     # This is a catch all exception, edit this part to fit your needs.
     print("S3 ERROR: ", e)
