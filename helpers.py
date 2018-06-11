@@ -9,7 +9,7 @@ s3 = boto3.client(
 )
 
 def upload_file_to_s3(filepath, filename, bucket_name, acl="public-read"):
-  file = open('./tmp/' + filename, 'rb')
+  file = open(filepath, 'rb')
 
   try:
     s3.put_object(
