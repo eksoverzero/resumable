@@ -1,10 +1,14 @@
 from flask import Flask, abort, jsonify, request, render_template
+from flask_cors import CORS
 from helpers import *
 
 import os, shutil
 
 # creates a Flask application, named app
 app = Flask(__name__)
+
+CORS(app)
+
 app.config.from_object("config")
 
 temp_base = os.path.expanduser("./tmp/")
