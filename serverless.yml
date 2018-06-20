@@ -60,12 +60,20 @@ package:
    - README.md
 
 functions:
-  hello:
+  getUpload:
     handler: handler.get
     events:
       - http:
           path: /upload
           method: get
+    environment:
+      BUCKET: ${self:custom.bucket}
+  postUpload:
+    handler: handler.post
+    events:
+      - http:
+          path: /upload
+          method: post
     environment:
       BUCKET: ${self:custom.bucket}
 

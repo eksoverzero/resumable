@@ -20,6 +20,7 @@
     "serverless-offline": "^3.24.5"
   },
   "dependencies": {
+    "aws-lambda-multipart-parser": "^0.1.2",
     "aws-sdk": "^2.259.1"
   }
 }
