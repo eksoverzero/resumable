@@ -60,19 +60,19 @@ package:
    - README.md
 
 functions:
-  getUpload:
-    handler: handler.get
+  resumableGET:
+    handler: handler.resumableGET
     events:
       - http:
-          path: /upload
+          path: /resumable
           method: get
     environment:
       BUCKET: ${self:custom.bucket}
-  postUpload:
-    handler: handler.post
+  resumablePOST:
+    handler: handler.resumablePOST
     events:
       - http:
-          path: /upload
+          path: /resumable
           method: post
     environment:
       BUCKET: ${self:custom.bucket}
