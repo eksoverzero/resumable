@@ -29,6 +29,12 @@ provider:
   region: us-east-1
   profile: default
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:ListBucket
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"

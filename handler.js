@@ -6,6 +6,8 @@ const createFile = require('./lib/createFile');
 const mergeFiles = require('./lib/mergeFiles');
 const getChunkFilename = require('./lib/getChunkFilename');
 
+const bucket = process.env.BUCKET;
+
 module.exports.resumableGET = (event, context, callback) => {
   const params = event.queryStringParameters;
 
@@ -28,7 +30,7 @@ module.exports.resumableGET = (event, context, callback) => {
              callback(null, {
                statusCode: 200,
                headers: { 'Content-Type': 'application/json' },
-               body: filename
+               body: `https://s3.amazonaws.com/${bucket}/${filename}`
              });
            } else {
              callback(null, {
@@ -61,12 +63,15 @@ module.exports.resumablePOST = (event, context, callback) => {
 
   const chunkFilename = getChunkFilename(filename, folder, chunkNumber);
 
-  return createFile(chunkFilename, file)
+  return createFile(chunkFilename, file.content)
+         .then(function(filename) {
+           return mergeFiles(filename, numberOfChunks);
+         })
          .then(function(filename) {
            callback(null, {
              statusCode: 200,
              headers: { 'Content-Type': 'application/json' },
-             body: filename
+             body: `https://s3.amazonaws.com/${bucket}/${filename}`
            });
          })
          .catch(function(error) {
