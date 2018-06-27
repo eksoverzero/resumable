@@ -1,6 +1,9 @@
 'use strict';
 
+const middy = require('middy');
 const multipart = require('aws-lambda-multipart-parser');
+const { cors } = require('middy/middlewares');
+
 const checkFile = require('./lib/checkFile');
 const createFile = require('./lib/createFile');
 const mergeFiles = require('./lib/mergeFiles');
@@ -8,7 +11,7 @@ const getChunkFilename = require('./lib/getChunkFilename');
 
 const bucket = process.env.BUCKET;
 
-module.exports.resumableGET = (event, context, callback) => {
+const resumableGET = (event, context, callback) => {
   const params = event.queryStringParameters;
 
   const folder = params.path,
@@ -28,40 +31,25 @@ module.exports.resumableGET = (event, context, callback) => {
          .then(function(filename) {
            if(typeof(filename)!='undefined') {
              callback(null, {
-               statusCode: 200,
-               headers: {
-                 'Content-Type': 'application/json',
-                 'Access-Control-Allow-Origin': '*',
-                 'Access-Control-Allow-Credentials': true
-              },
-               body: `https://s3.amazonaws.com/${bucket}/${filename}`
+               body: `https://s3.amazonaws.com/${bucket}/${filename}`,
+               statusCode: 200
              });
            } else {
              callback(null, {
-               statusCode: 204,
-               headers: {
-                 'Content-Type': 'application/json',
-                 'Access-Control-Allow-Origin': '*',
-                 'Access-Control-Allow-Credentials': true
-               },
-               body: error
+               body: error,
+               statusCode: 204
              });
            }
          })
          .catch(function(error) {
            callback(null, {
-             statusCode: 500,
-             headers: {
-               'Content-Type': 'application/json',
-               'Access-Control-Allow-Origin': '*',
-               'Access-Control-Allow-Credentials': true
-             },
-             body: error
+             body: error,
+             statusCode: 500
            });
          });
 };
 
-module.exports.resumablePOST = (event, context, callback) => {
+const resumablePOST = (event, context, callback) => {
   const params = multipart.parse(event, false);
 
   const file = params.file,
@@ -81,24 +69,20 @@ module.exports.resumablePOST = (event, context, callback) => {
          })
          .then(function(filename) {
            callback(null, {
-             statusCode: 200,
-             headers: {
-               'Content-Type': 'application/json',
-               'Access-Control-Allow-Origin': '*',
-               'Access-Control-Allow-Credentials': true
-             },
-             body: `https://s3.amazonaws.com/${bucket}/${filename}`
+             body: `https://s3.amazonaws.com/${bucket}/${filename}`,
+             statusCode: 200
            });
          })
          .catch(function(error) {
            callback(null, {
-             statusCode: 404,
-             headers: {
-               'Content-Type': 'application/json',
-               'Access-Control-Allow-Origin': '*',
-               'Access-Control-Allow-Credentials': true
-             },
-             body: error
+             body: error,
+             statusCode: 404
            });
          });
 };
+
+const resumableGEThandler = middy(resumableGET).use(cors());
+const resumablePOSThandler = middy(resumablePOST).use(cors());
+
+module.exports = { resumableGEThandler }
+module.exports = { resumablePOSThandler }
