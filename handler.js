@@ -1,9 +1,6 @@
 'use strict';
 
-const middy = require('middy');
 const multipart = require('aws-lambda-multipart-parser');
-const { cors } = require('middy/middlewares');
-
 const checkFile = require('./lib/checkFile');
 const createFile = require('./lib/createFile');
 const mergeFiles = require('./lib/mergeFiles');
@@ -11,7 +8,7 @@ const getChunkFilename = require('./lib/getChunkFilename');
 
 const bucket = process.env.BUCKET;
 
-const resumableGET = (event, context, callback) => {
+module.exports.resumableGET = (event, context, callback) => {
   const params = event.queryStringParameters;
 
   const folder = params.path,
@@ -31,25 +28,37 @@ const resumableGET = (event, context, callback) => {
          .then(function(filename) {
            if(typeof(filename)!='undefined') {
              callback(null, {
-               body: `https://s3.amazonaws.com/${bucket}/${filename}`,
-               statusCode: 200
+               statusCode: 200,
+               headers: {
+                 'Content-Type': 'application/json',
+                 'Access-Control-Allow-Origin': '*'
+              },
+               body: `https://s3.amazonaws.com/${bucket}/${filename}`
              });
            } else {
              callback(null, {
-               body: error,
-               statusCode: 204
+               statusCode: 204,
+               headers: {
+                 'Content-Type': 'application/json',
+                 'Access-Control-Allow-Origin': '*'
+               },
+               body: error
              });
            }
          })
          .catch(function(error) {
            callback(null, {
-             body: error,
-             statusCode: 500
+             statusCode: 500,
+             headers: {
+               'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*'
+             },
+             body: error
            });
          });
 };
 
-const resumablePOST = (event, context, callback) => {
+module.exports.resumablePOST = (event, context, callback) => {
   const params = multipart.parse(event, false);
 
   const file = params.file,
@@ -69,20 +78,22 @@ const resumablePOST = (event, context, callback) => {
          })
          .then(function(filename) {
            callback(null, {
-             body: `https://s3.amazonaws.com/${bucket}/${filename}`,
-             statusCode: 200
+             statusCode: 200,
+             headers: {
+               'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*'
+             },
+             body: `https://s3.amazonaws.com/${bucket}/${filename}`
            });
          })
          .catch(function(error) {
            callback(null, {
-             body: error,
-             statusCode: 404
+             statusCode: 404,
+             headers: {
+               'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*'
+             },
+             body: error
            });
          });
 };
-
-const resumableGEThandler = middy(resumableGET).use(cors());
-const resumablePOSThandler = middy(resumablePOST).use(cors());
-
-module.exports = { resumableGEThandler }
-module.exports = { resumablePOSThandler }
