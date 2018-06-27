@@ -29,13 +29,21 @@ module.exports.resumableGET = (event, context, callback) => {
            if(typeof(filename)!='undefined') {
              callback(null, {
                statusCode: 200,
-               headers: { 'Content-Type': 'application/json' },
+               headers: {
+                 'Content-Type': 'application/json',
+                 'Access-Control-Allow-Origin': '*',
+                 'Access-Control-Allow-Credentials': true
+              },
                body: `https://s3.amazonaws.com/${bucket}/${filename}`
              });
            } else {
              callback(null, {
                statusCode: 204,
-               headers: { 'Content-Type': 'application/json' },
+               headers: {
+                 'Content-Type': 'application/json',
+                 'Access-Control-Allow-Origin': '*',
+                 'Access-Control-Allow-Credentials': true
+               },
                body: error
              });
            }
@@ -43,7 +51,11 @@ module.exports.resumableGET = (event, context, callback) => {
          .catch(function(error) {
            callback(null, {
              statusCode: 500,
-             headers: { 'Content-Type': 'application/json' },
+             headers: {
+               'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*',
+               'Access-Control-Allow-Credentials': true
+             },
              body: error
            });
          });
@@ -70,14 +82,22 @@ module.exports.resumablePOST = (event, context, callback) => {
          .then(function(filename) {
            callback(null, {
              statusCode: 200,
-             headers: { 'Content-Type': 'application/json' },
+             headers: {
+               'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*',
+               'Access-Control-Allow-Credentials': true
+             },
              body: `https://s3.amazonaws.com/${bucket}/${filename}`
            });
          })
          .catch(function(error) {
            callback(null, {
              statusCode: 404,
-             headers: { 'Content-Type': 'application/json' },
+             headers: {
+               'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*',
+               'Access-Control-Allow-Credentials': true
+             },
              body: error
            });
          });
