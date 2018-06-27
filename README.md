@@ -19,8 +19,10 @@ serverless deploy
 
 ### Development
 
-Run offline:
+Run Serverless offline...
 
 ```
 serverless offline start
 ```
+
+... and test uploads using the `pubic/index.html` file
