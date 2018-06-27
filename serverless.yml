@@ -30,10 +30,9 @@ provider:
   profile: default
 
   iamRoleStatements:
-    - Effect: Allow
+    - Effect: 'Allow'
       Action:
-        - s3:PutObject
-        - s3:ListBucket
+        - 's3:*'
       Resource: "arn:aws:s3:::${self:custom.bucket}/*"
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -84,6 +83,25 @@ functions:
           method: post
     environment:
       BUCKET: ${self:custom.bucket}
+
+resources:
+  Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

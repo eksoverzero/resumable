@@ -4,7 +4,7 @@ Upload files to AWS S3 using [Resumable.js](http://www.resumablejs.com/) and AWS
 
 
 Requires:
- - NodeJS > 6.x
+ - NodeJS > 6.10
  - [Serverless](https://serverless.com/)
 
 **Chunks are NOT deleted from the bucket...**
