@@ -19,7 +19,13 @@ serverless deploy
 
 ### Development
 
-Run Serverless offline...
+Install development dependencies...
+
+```
+npm install
+```
+
+Run Serverless in offline mode...
 
 ```
 serverless offline start
