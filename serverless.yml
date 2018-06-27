@@ -26,7 +26,7 @@ provider:
 
 # you can overwrite defaults here
   stage: dev
-  region: us-east-1
+  region: eu-west-1
   profile: default
 
   iamRoleStatements:
@@ -70,6 +70,7 @@ functions:
     handler: handler.resumableGET
     events:
       - http:
+          cors: true
           path: /resumable
           method: get
     environment:
@@ -78,6 +79,7 @@ functions:
     handler: handler.resumablePOST
     events:
       - http:
+          cors: true
           path: /resumable
           method: post
     environment:
