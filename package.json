@@ -1,5 +1,5 @@
 {
-  "name": "cloudburst-functions",
+  "name": "resumable",
   "version": "1.0.0",
   "description": "Resumable uploads to S3",
   "main": "handler.js",
@@ -8,20 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/undefinedinc/cloudburst-functions.git"
+    "url": "git+https://github.com/eksoverzero/resumable.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/undefinedinc/cloudburst-functions/issues"
+    "url": "https://github.com/eksoverzero/resumable/issues"
   },
-  "homepage": "https://github.com/undefinedinc/cloudburst-functions#readme",
+  "homepage": "https://github.com/eksoverzero/resumable#readme",
   "devDependencies": {
     "serverless-offline": "^3.24.5"
   },
   "dependencies": {
     "aws-lambda-multipart-parser": "^0.1.2",
-    "aws-sdk": "^2.259.1",
-    "middy": "^0.15.7"
+    "aws-sdk": "^2.259.1"
   }
 }
