@@ -2,8 +2,12 @@
 
 Upload files to AWS S3 using [Resumable.js](http://www.resumablejs.com/) and AWS Lambda.
 
+The ResumableJS library splits large files into chunks. Each chunk is uploaded to the server and when all chunks have been received, they are merged back together into one.
 
-Requires:
+The chunk size, number of chunks uploaded at once and more are configurable using the jQuery plugin (a bridge to the original JavaScript library). The jQuery plugin also provides a drag and drop interface and tracks the upload progress.
+
+### Requirements
+
  - NodeJS > 6.10
  - [Serverless](https://serverless.com/)
 
