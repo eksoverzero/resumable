@@ -13,6 +13,7 @@ module.exports.resumableGET = (event, context, callback) => {
 
   const folder = params.path,
         filename = params.resumableFilename,
+        filetype = params.resumableType,
         chunkSize = parseInt(params.resumableChunkSize),
         totalSize = parseInt(params.resumableTotalSize),
         identifier = params.resumableIdentifier,
@@ -23,7 +24,7 @@ module.exports.resumableGET = (event, context, callback) => {
 
   return checkFile(chunkFilename)
          .then(function(filename) {
-           return mergeFiles(filename, numberOfChunks);
+           return mergeFiles(filename, filetype, numberOfChunks);
          })
          .then(function(filename) {
            if(typeof(filename)!='undefined') {
@@ -64,17 +65,20 @@ module.exports.resumablePOST = (event, context, callback) => {
   const file = params.file,
         folder = params.path,
         filename = params.resumableFilename,
+        filetype = params.resumableType,
         chunkSize = parseInt(params.resumableChunkSize),
         totalSize = parseInt(params.resumableTotalSize),
         identifier = params.resumableIdentifier,
         chunkNumber = parseInt(params.resumableChunkNumber),
         numberOfChunks = Math.max(Math.floor(totalSize/(chunkSize*1.0)), 1);
 
+  console.log(file)
+
   const chunkFilename = getChunkFilename(filename, folder, chunkNumber);
 
-  return createFile(chunkFilename, file.content)
+  return createFile(chunkFilename, file)
          .then(function(filename) {
-           return mergeFiles(filename, numberOfChunks);
+           return mergeFiles(filename, filetype, numberOfChunks);
          })
          .then(function(filename) {
            callback(null, {
