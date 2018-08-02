@@ -2,7 +2,7 @@
   "name": "resumable",
   "version": "1.0.0",
   "description": "Resumable uploads to S3",
-  "main": "handler.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,11 +16,9 @@
     "url": "https://github.com/eksoverzero/resumable/issues"
   },
   "homepage": "https://github.com/eksoverzero/resumable#readme",
-  "devDependencies": {
-    "serverless-offline": "^3.24.5"
-  },
   "dependencies": {
-    "aws-lambda-multipart-parser": "^0.1.2",
-    "aws-sdk": "^2.259.1"
+    "aws-sdk": "^2.259.1",
+    "connect-multiparty": "^2.1.1",
+    "express": "^4.16.3"
   }
 }
